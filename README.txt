@@ -22,3 +22,6 @@ Step 2 - Initializing a Flask App from Scratch
 
 Step 3 - Connecting to git and pulling/pushing
 * CS50 Wep Class on Git: https://cs50.harvard.edu/web/2020/notes/1/
+
+Step 4 - Starting the Web App Design - Finding Icons
+* Freemium Icon Site: https://fontawesome.com/
