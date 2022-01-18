@@ -1,6 +1,6 @@
 nav {
     height: 8vh;
-    border-radius: 10px;
+    border-radius: 75px 75px 0 0;
 }
 
 .nav-item {
