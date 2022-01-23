@@ -20,9 +20,14 @@ Step 2 - Initializing a Flask App from Scratch
 * Template Inheritance: https://flask.palletsprojects.com/en/2.0.x/patterns/templateinheritance/
 * Created layout.html as base template to extend from. Created index.html
 * Manage dependencies by using pipreqs: https://pypi.org/project/pipreqs/
+* Using flask login for authentication: https://flask-login.readthedocs.io/en/latest/ 
+                                        https://www.digitalocean.com/community/tutorials/how-to-add-authentication-to-your-app-with-flask-login
+* Using flask-sqlalchemy to communicate with sqlite3 db: https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
+* Flask Sessions feature: https://flask.palletsprojects.com/en/2.0.x/quickstart/#sessions
+* Run this cmd to generate a secret key for sessions: <python -c 'import secrets; print(secrets.token_hex())'>
 
 Step 3 - Connecting to git and pulling/pushing
-* CS50 Wep Class on Git: https://cs50.harvard.edu/web/2020/notes/1/
+* CS50 Web Class on Git: https://cs50.harvard.edu/web/2020/notes/1/
 
 Step 4 - Starting the Web App UI Design
 * Freemium Icon Site: https://fontawesome.com/
