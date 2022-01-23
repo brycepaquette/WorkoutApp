@@ -16,12 +16,16 @@ Step 1 - Creating a database of exercises to choose from in the app
 
 Step 2 - Initializing a Flask App from Scratch
 * Flask QuickStart: https://flask.palletsprojects.com/en/2.0.x/quickstart/
-* Turned on debug mode: https://flask.palletsprojects.com/en/2.0.x/quickstart/#debug-mode
+* Turned on debug mode: $env:FLASK_ENV = "development" https://flask.palletsprojects.com/en/2.0.x/quickstart/#debug-mode
 * Template Inheritance: https://flask.palletsprojects.com/en/2.0.x/patterns/templateinheritance/
 * Created layout.html as base template to extend from. Created index.html
+* Manage dependencies by using pipreqs: https://pypi.org/project/pipreqs/
 
 Step 3 - Connecting to git and pulling/pushing
 * CS50 Wep Class on Git: https://cs50.harvard.edu/web/2020/notes/1/
 
-Step 4 - Starting the Web App Design - Finding Icons
+Step 4 - Starting the Web App UI Design
 * Freemium Icon Site: https://fontawesome.com/
+* Free Icon Site: https://phosphoricons.com/ (No Python Flask support, need to use svg or png)
+* Free App UI Designer Tool: https://framer.com/
+* SVG formats can be copied into an html page for rendering. <img> tags don't work for this format
