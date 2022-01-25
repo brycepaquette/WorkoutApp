@@ -53,12 +53,9 @@ def signup():
     if request.method == "POST":
         form = request.form
         hash = generate_password_hash(form['password'])
-        fields = [key for key in Users.__dict__.keys() if not key.startswith('_') or key == 'id'] 
 
         # Confirm all required fields were sent
-        for field in fields:
-            if field not in form.keys():
-                return f"{field} is a required field!"
+        # TODO
 
         # Check if user exists, redirect if exists
         user = Users.query.filter_by(username=form['username'])

@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block content%}
-    <form class="signup">
+    <form class="signup" action="/signup" method="post">
         <h4 id="signup-title">Sign Up</h4>
         <div>
             <input type="text" class="form-control" id="fname" name="fname" placeholder="First Name">
@@ -214,7 +214,7 @@
             <input type="text" class="form-control" id="weight" name="weight" placeholder="lbs.">
         </div>
         <div class="col-12">
-        <button type="submit" class="btn btn-primary">Sign in</button>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
         </div>
     </form>
 {% endblock %}
