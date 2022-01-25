@@ -1,9 +1,48 @@
 
-/* body {
-    background-image: "barbell-light.svg";
-    width:100%;
-    color:aqua;
-} */
+* {
+    /* color:white; */
+}
+html, body, #content {
+    height: auto;
+}
+
+input {
+    margin: 10px auto;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Poppins:200i,400&display=swap');
+
+body::before {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  background-image: linear-gradient( 115deg,
+      rgba(78, 78, 80, 0.75), 
+      rgba(19, 19, 26, 0.95)
+    ), url("gym.jpg");
+  background-size:cover;
+  background-repeat: no-repeat;
+  background-position:center;
+}
+
+#content {
+    padding-top: 20px;
+}
+
+#signup-title {
+    text-align: center;
+    padding-bottom: 2px;
+}
+
+.signup {
+    background-color: RGB(255,255,255,0.60);
+    width: 500px;
+    padding: 20px;
+    border-radius: 20px;
+    margin: 0 auto;
+}
 
 nav {
     height: 7vh;
@@ -26,4 +65,10 @@ nav {
     width: 40px;
     height: 40px;
     fill: #FFFFFF;
+}
+
+@media (max-width: 500px) {
+    .signup {
+        width: 300px;
+    }
 }
