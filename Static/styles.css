@@ -12,7 +12,7 @@ input {
 
 @import url('https://fonts.googleapis.com/css?family=Poppins:200i,400&display=swap');
 
-body::before {
+html::before {
   content: '';
   position: absolute;
   height: 100%;
@@ -27,21 +27,25 @@ body::before {
   background-position:center;
 }
 
-#content {
-    padding-top: 20px;
-}
-
-#signup-title {
+.form-title {
     text-align: center;
-    padding-bottom: 2px;
+    padding: 5px 0 10px;
 }
 
-.signup {
+.form-box {
     background-color: RGB(255,255,255,0.60);
-    width: 500px;
+    width: 450px;
     padding: 20px;
     border-radius: 20px;
-    margin: 0 auto;
+    margin: 5vh auto;
+}
+
+.login {
+    margin: 30vh auto;
+}
+
+.link-text {
+    font-size: .75rem;
 }
 
 nav {
@@ -68,7 +72,7 @@ nav {
 }
 
 @media (max-width: 500px) {
-    .signup {
+    .form-box {
         width: 300px;
     }
 }

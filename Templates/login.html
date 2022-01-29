@@ -4,7 +4,22 @@
     Login Page
 {% endblock %}
 
-{% block body %}
-    
+{% block content %}
+    <div class="container form-box login">
+        <form action="/login" method="post">
+            <h4 class="form-title">Login</h4>
+            <div>
+                <input required type="email" class="form-control" id="email" name="Email" placeholder="example@gmail.com">
+            </div>
+            <div>
+                <input required type="password" class="form-control" id="password" name="Password" placeholder="Password">
+            </div>
+            <div class="col-12">
+            <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
+        <br>
+        <a class="link-text"href="/signup">New User? Register Here</a>
+    </div>
 {% endblock %}
 

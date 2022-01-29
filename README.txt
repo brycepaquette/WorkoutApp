@@ -34,6 +34,8 @@ Step 4 - Starting the Web App UI Design
 Step 5 - Adding Authentication
 * Using flask login for authentication: https://flask-login.readthedocs.io/en/latest/ 
                                         https://www.digitalocean.com/community/tutorials/how-to-add-authentication-to-your-app-with-flask-login
-* Using flask-sqlalchemy to communicate with sqlite3 db: https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
+                                        https://pythonbasics.org/flask-login/
+* Using flask-sqlalchemy to communicate with sqlite3 db: https://flask-sqlalchemy.palletsprojects.com/en/2.x/
+                                                         https://flask-sqlalchemy.palletsprojects.com/en/2.x/queries/#querying-records
 * Flask Sessions feature: https://flask.palletsprojects.com/en/2.0.x/quickstart/#sessions
 * Run this cmd to generate a secret key for sessions: <python -c 'import secrets; print(secrets.token_hex())'>
