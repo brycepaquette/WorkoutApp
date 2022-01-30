@@ -1,5 +1,6 @@
 import re
-from flask import Flask, render_template, request, sessions, redirect
+from flask import Flask, render_template, request, session, sessions, redirect
+from sqlalchemy import distinct
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
@@ -48,6 +49,23 @@ class Users(UserMixin, db.Model):
     def __repr__(self):
         return '<User %r>' % self.email
 
+# Exercise Model
+class Exercises(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=False, nullable=False)
+    target = db.Column(db.String(100), unique=False, nullable=False)
+    equipment = db.Column(db.String(100), unique=False, nullable=False)
+    gif_url = db.Column(db.String(100), unique=False, nullable=False)
+
+    def __repr__(self):
+        return '<Exercise %r>' % self.name
+
+
+exercise_list = Exercises.query.all()
+targets = set()
+for exercise in exercise_list:
+    targets.add(exercise.target)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -59,10 +77,35 @@ def load_user(user_id):
 def index():
     return render_template("index.html")
 
+
+@app.route("/log", methods=["GET", "POST"])
+@login_required
+def log():
+    return render_template("log.html")
+
+
+@app.route("/exercises", methods=["GET", "POST"])
+@login_required
+def exercises():
+    global targets
+    targets = sorted(targets)    
+    return render_template("exercises.html", targets=targets)
+
+@app.route("/exercises/<target>", methods=["GET", "POST"])
+@login_required
+def targetExercises(target):
+    global exercise_list
+    list = []
+    for exercise in exercise_list:
+        if exercise.target == target:
+            list.append(exercise)
+    return render_template("targetExercises.html", exercises=list, target=target)
+
+
 @app.route("/profile", methods=["GET"])
 @login_required
 def profile():
-    return render_template("index.html")
+    return render_template("profile.html", user=current_user)
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -160,5 +203,10 @@ def login():
 
 @app.route("/logout", methods=["GET", "POST"])
 def logout():
+    logout_user()
+    return redirect('/login')
+
+@app.route("/delete", methods=["POST"])
+def delete():
     logout_user()
     return redirect('/login')

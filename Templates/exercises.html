@@ -1,0 +1,68 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Profile Page
+{% endblock %}
+
+{% block content %}
+    <div class="exercise-box">
+        {% for target in targets %}
+            <div class="card">
+                <a href="/exercises/{{ target }}">
+                    <img src="../static/{{ target }}.jpeg" class="card-img-top card-img" alt="...">
+                </a>
+                <a href="/profile">
+                    <div class="centered">{{ target.capitalize() }}</div>
+                </a>
+            </div>
+        {% endfor %}
+        <!-- <div class="card">
+            <a href="/profile">
+                <img src="../static/abs.jpeg" class="card-img-top card-img" alt="...">
+            </a>
+            <a href="/profile">
+                <div class="centered">Abs</div>
+            </a>
+        </div>
+        <div class="card">
+            <a href="/profile">
+                <img src="../static/arms.jpeg" class="card-img-top card-img" alt="...">
+            </a>
+            <a href="/profile">
+                <div class="centered">Arms</div>
+            </a>
+        </div>
+        <div class="card">
+            <a href="/profile">
+                <img src="../static/shoulders.jpeg" class="card-img-top card-img" alt="...">
+            </a>
+            <a href="/profile">
+                <div class="centered">Shoulders</div>
+            </a>
+        </div>
+        <div class="card">
+            <a href="/profile">
+                <img src="../static/cardio.jpeg" class="card-img-top card-img" alt="...">
+            </a>
+            <a href="/profile">
+                <div class="centered">Cardio</div>
+            </a>
+        </div>
+        <div class="card">
+            <a href="/profile">
+                <img src="../static/back.jpeg" class="card-img-top card-img" alt="...">
+            </a>
+            <a href="/profile">
+                <div class="centered">Back</div>
+            </a>
+        </div>
+        <div class="card">
+            <a href="/profile">
+                <img src="../static/legs.jpeg" class="card-img-top card-img" alt="...">
+            </a>
+            <a href="/profile">
+                <div class="centered">Legs</div>
+            </a>
+        </div>
+    </div> -->
+{% endblock %}

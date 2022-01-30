@@ -20,7 +20,7 @@ Step 2 - Initializing a Flask App from Scratch
 * Debug app.py in vscode debugger: https://code.visualstudio.com/docs/python/tutorial-flask
 * Template Inheritance: https://flask.palletsprojects.com/en/2.0.x/patterns/templateinheritance/
 * Created layout.html as base template to extend from. Created index.html
-* Manage dependencies by using pipreqs: https://pypi.org/project/pipreqs/
+* Manage dependencies by using pipreqs: <pipreqs --force --print> https://pypi.org/project/pipreqs/
 
 Step 3 - Connecting to git and pulling/pushing
 * CS50 Web Class on Git: https://cs50.harvard.edu/web/2020/notes/1/

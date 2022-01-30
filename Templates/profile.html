@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Profile Page
+{% endblock %}
+
+{% block content %}
+    <div class="container form-box profile">
+        <p>
+            <strong>First Name:</strong> {{ user.fname.capitalize() }}<br>
+            <strong>Last Name:</strong> {{ user.lname.capitalize() }}<br>
+            <strong>Email:</strong> {{ user.email.capitalize() }}<br>
+            <strong>Mobile:</strong> {{ user.phoneNo.capitalize() }}<br>
+            <strong>Birthday:</strong> {{ user.bMonth }}/{{ user.bDay }}/{{ user.bYear }}<br>
+            <strong>Gender:</strong> {% if user.gender == 1 %}
+                                        Male
+                                    {% elif user.gender == 0 %}
+                                        Female
+                                    {% else %}
+                                        Other
+                                    {% endif %} 
+                                    <br>
+            <strong>Height:</strong> {{ user.height // 12 }} ft. {{ user.height % 12 }} in.<br>
+            <strong>Weight:</strong> {{ user.weight}} lbs.<br>
+
+        </p>
+                <form class="inline"action="/logout" method="post">
+                    <button class="btn btn-primary" type="submit">Logout</button>
+                </form>
+                <form class="inline"action="" method="post">
+                    <button class="btn btn-primary" type="submit">Update</button>
+                </form>
+                <form class="inline" action="/delete" method="post">
+                    <input hidden type="text" name="id" value="{{ user.id }}">
+                    <button class="btn btn-danger" type="submit">Delete Account</button>
+                </form>
+        </div>
+        
+    </div>
+{% endblock %}

@@ -2,8 +2,8 @@
 * {
     /* color:white; */
 }
-html, body, #content {
-    height: auto;
+#content {
+    height: 100%;
 }
 
 input {
@@ -12,19 +12,26 @@ input {
 
 @import url('https://fonts.googleapis.com/css?family=Poppins:200i,400&display=swap');
 
+html {
+    min-height: 100%;
+    position:relative;
+  }
 html::before {
-  content: '';
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  z-index: -1;
-  background-image: linear-gradient( 115deg,
+    content: '';
+    position: absolute;
+    z-index: -1;
+    background-image: linear-gradient( 115deg,
       rgba(78, 78, 80, 0.75), 
       rgba(19, 19, 26, 0.95)
     ), url("gym.jpg");
-  background-size:cover;
-  background-repeat: no-repeat;
-  background-position:center;
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position:center;
+    background-attachment: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
 }
 
 .form-title {
@@ -44,14 +51,68 @@ html::before {
     margin: 30vh auto;
 }
 
+.profile {
+    margin: 25vh auto;
+}
+
 .link-text {
     font-size: .75rem;
+}
+.inline {
+    display: inline;
+}
+
+.btn {
+    font-size: small;
 }
 
 nav {
     height: 7vh;
     border-radius: 60px 60px 0 0;
 }
+
+.card {
+    width: 450px;
+    margin: 1vh auto;
+    background-color:rgba(255, 255, 255, 0.85);
+    padding: 2px;
+    border-radius: 20px;
+}
+.card-img {
+    border-radius: 20px;
+    max-height:850px;
+    filter:grayscale()
+}
+
+.radius {
+    background-color: rgba(78, 78, 80, 0.75);
+    padding: 6px;
+    border-radius: 20px;
+}
+
+.white-text {
+    color: white;
+}
+
+h1 {
+    text-align: center;
+}
+
+.exercise-box {
+    margin-bottom: 7.5vh;
+}
+
+.centered {
+    position: absolute;
+    padding: 2px 20px;
+    border-radius: 50px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+    font-size: 1.25rem;
+    background-color: rgba(255, 255, 255, 0.85);
+  }
 
 .nav-item {
     margin: auto 0;
@@ -72,7 +133,7 @@ nav {
 }
 
 @media (max-width: 500px) {
-    .form-box {
-        width: 300px;
+    .form-box, .card {
+        width: 100%;
     }
 }
