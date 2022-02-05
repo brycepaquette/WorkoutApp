@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Workouts Page
+{% endblock %}
+
+{% block content %}
+    <div class="page-box workouts">
+        <div class="header">
+            <h2>Log a Workout</h2>
+        </div>
+        {% for workout in workouts %}
+            <div class="card">
+                <a href="/workouts/{{ workout }}">
+                    <img src="../static/images/{{ workout }}.jpeg" class="card-img-top card-img" alt="...">
+                </a>
+                <a href="/workouts/{{ workout }}">
+                    <div class="centered">{{ workout.capitalize() }}</div>
+                </a>
+            </div>
+        {% endfor %}
+        <form class="col-5 horz-center" action="/history" method="GET">
+            <button type="submit" class="btn btn-primary">View Workout History</button>
+        </form>
+    </div>
+{% endblock %}

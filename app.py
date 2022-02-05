@@ -1,6 +1,9 @@
+import calendar
+from datetime import date, datetime
+from flask_bootstrap import Bootstrap
+from flask_datepicker import datepicker
 import re
-from flask import Flask, render_template, request, session, sessions, redirect
-from sqlalchemy import distinct
+from flask import Flask, render_template, request, redirect
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
@@ -27,6 +30,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///workoutapp.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # Added due to warning suggesting it be set to False
 db = SQLAlchemy(app)
 
+#Initialize datepicker
+Bootstrap(app)
+datepicker(app)
+
 # User Model
 class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -34,13 +41,13 @@ class Users(UserMixin, db.Model):
     lname = db.Column(db.String(100), unique=False, nullable=False)
     password = db.Column(db.String(100), unique=False, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    phoneNo = db.Column(db.String(100), unique=True, nullable=False)
+    phoneNo = db.Column(db.String(100), unique=True, nullable=False) # Must be in format 555.555.5555
     bYear = db.Column(db.Integer, unique=False, nullable=False)
     bMonth = db.Column(db.Integer, unique=False, nullable=False)
     bDay = db.Column(db.Integer, unique=False, nullable=False)
-    gender = db.Column(db.Integer, unique=False, nullable=False)
-    height = db.Column(db.Integer, unique=False, nullable=False)
-    weight = db.Column(db.Float, unique=False, nullable=False)
+    gender = db.Column(db.Integer, unique=False, nullable=False) # 0 = Female, 1 = Male, 2 = Other
+    height = db.Column(db.Integer, unique=False, nullable=False) # Height stored as inches
+    weight = db.Column(db.Float, unique=False, nullable=False) # Weight stored as pounds
 
     def check_password(self, password):
         result = check_password_hash(self.password, password)
@@ -53,17 +60,36 @@ class Users(UserMixin, db.Model):
 class Exercises(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=False, nullable=False)
-    target = db.Column(db.String(100), unique=False, nullable=False)
-    equipment = db.Column(db.String(100), unique=False, nullable=False)
-    gif_url = db.Column(db.String(100), unique=False, nullable=False)
+    target = db.Column(db.String(100), unique=False, nullable=False) # Area of Body (ex. Arms, Legs, Cardio, etc.)
+    equipment = db.Column(db.String(100), unique=False, nullable=False) # Equipment needed to perform exercise
+    gif_url = db.Column(db.String(100), unique=False, nullable=False) # Instructional GIF of exercise
 
     def __repr__(self):
         return '<Exercise %r>' % self.name
 
+# Workout Log Model
+class WorkoutLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    userId = db.Column(db.Integer, db.ForeignKey('users.id'))
+    recorded = db.Column(db.DateTime, unique=False, nullable=False)
+    exercise = db.Column(db.String(100), unique=False, nullable=False)
+    type = db.Column(db.String(100), unique=False, nullable=False) # Cardio or weightlift
+    reps = db.Column(db.Integer, unique=False, nullable=True)
+    weight = db.Column(db.Float, unique=False, nullable=True) # Measured in lbs.
+    duration = db.Column(db.Integer, unique=False, nullable=True) # Measured in mins
+    distance = db.Column(db.Float, unique=False, nullable=True) # Measured in mi.
+    avgSpeed = db.Column(db.Float, unique=False, nullable=True) # Measured in MPH
+    calories = db.Column(db.Integer, unique=False, nullable=True) # Calorie Estimation using formula from https://fitness.stackexchange.com/questions/32401/how-to-calculate-calories-in-kcal-from-time-and-distance-running
+    difficulty = db.Column(db.Integer, unique=False, nullable=True) # Difficulty scale from 0 to 10
 
-exercise_list = Exercises.query.all()
+    def __repr__(self):
+        return '<WorkoutLog %r>' % self.id
+
+
+# Generate a unique list of targets for exercises page
+exerciseList = Exercises.query.all()
 targets = set()
-for exercise in exercise_list:
+for exercise in exerciseList:
     targets.add(exercise.target)
 
 
@@ -75,28 +101,127 @@ def load_user(user_id):
 @app.route("/", methods=["GET"])
 @login_required
 def index():
-    return render_template("index.html")
+    # Get info for dashboard if user is logged in
+    if current_user.is_authenticated:
+        today = date.today()
+        monthName = today.strftime("%B")
+        daysInMonth = calendar.monthrange(today.year, today.month)[1]
+        count = 0
+        totalDist = 0
+        BMI = round(((current_user.weight / (current_user.height ** 2)) * 703),1)
+        workouts = WorkoutLog.query.filter_by(userId=current_user.id)
+
+        for workout in workouts:
+            if workout.recorded.date() >= today.replace(day=1):
+                count += 1
+            if workout.distance != None:
+                totalDist += workout.distance
+
+    return render_template("index.html", count=count, daysInMonth=daysInMonth, totalDist=totalDist, monthName=monthName, BMI=BMI)
 
 
-@app.route("/log", methods=["GET", "POST"])
+@app.route("/workouts", methods=["GET"])
 @login_required
-def log():
-    return render_template("log.html")
+def workout():
+    workouts = ["cardio", "strength training"]
+    return render_template("workouts.html", workouts=workouts)
 
 
-@app.route("/exercises", methods=["GET", "POST"])
+@app.route("/workouts/<workout>", methods=["GET", "POST"])
+@login_required
+def workoutLog(workout):
+    recorded = date.today()
+
+    if request.method == "POST":
+        form = request.form
+        age = recorded.year - current_user.bYear
+        weight = current_user.weight
+        gender = current_user.gender
+
+        if workout == "cardio":
+            duration = form['Duration']
+            dist = form['Distance']
+            # Calculate Calories Burned
+            calories = None
+
+            if gender == 1:
+                age_coeff = 0.2017
+                weight_coeff = 0.09036
+            else:
+                age_coeff = 0.074
+                weight_coeff = 0.05741
+            calories = round(abs((((age * age_coeff) - (weight * weight_coeff)) * int(duration)) / 4.184))
+
+            # Calculate AVG speed if time and duration are not blank
+            avgSpeed = None
+            if dist != "":
+                avgSpeed = float(dist) / int(duration) * 60
+
+            log = WorkoutLog(
+                userId = current_user.id,
+                recorded = recorded,
+                exercise = form['Exercise'],
+                type = workout,
+                duration = duration,
+                distance = dist if dist != "" else None,
+                avgSpeed = avgSpeed,
+                calories = calories,
+                difficulty = form['Difficulty']
+            )
+        elif workout == "strength training":
+            log = WorkoutLog(
+                userId = current_user.id,
+                recorded = recorded,
+                exercise = form['Exercise'],
+                type = workout,
+                reps = form['Reps'],
+                weight = form['Weight'],
+                difficulty = form['Difficulty']
+            )
+
+        # Add user to the database
+        db.session.add(log)
+        db.session.commit()
+        return redirect(f'/workouts/{workout}')
+    else:
+        exercises = []
+        workoutLogs = WorkoutLog.query.filter_by(recorded=f"{recorded.strftime('%Y-%m-%d')} 00:00:00.000000", userId=current_user.id).all()
+        scale = range(1,11)
+        reps = range(20, 0, -1)
+
+        # List of exercises dependant on the workout passed from url
+        for exercise in exerciseList:
+            if workout == "cardio" and exercise.target == "cardio":
+                exercises.append(exercise)
+            elif workout == "strength training" and exercise.target != "cardio":
+                exercises.append(exercise)
+        return render_template("workoutLog.html", workout=workout, exercises=exercises, workoutLogs=workoutLogs, scale=scale, reps=reps, today=recorded)
+
+
+@app.route("/history", methods=["GET", "POST"])
+@login_required
+def history():
+    recorded = date.today().strftime('%Y-%m-%d')
+    if request.method == "POST":
+        recorded = request.form['date']
+    workoutLogs = WorkoutLog.query.filter_by(recorded=f"{recorded} 00:00:00.000000", userId=current_user.id).all()
+    date_msg = datetime.strptime(recorded, '%Y-%m-%d').strftime('%m/%d/%Y')
+    return render_template("history.html", workoutLogs=workoutLogs, recorded=recorded, date_msg=date_msg)
+
+
+@app.route("/exercises", methods=["GET"])
 @login_required
 def exercises():
     global targets
-    targets = sorted(targets)    
+    targets = sorted(targets)
     return render_template("exercises.html", targets=targets)
 
-@app.route("/exercises/<target>", methods=["GET", "POST"])
+@app.route("/exercises/<target>", methods=["GET"])
 @login_required
 def targetExercises(target):
-    global exercise_list
+    global exerciseList
     list = []
-    for exercise in exercise_list:
+    for exercise in exerciseList:
         if exercise.target == target:
             list.append(exercise)
     return render_template("targetExercises.html", exercises=list, target=target)

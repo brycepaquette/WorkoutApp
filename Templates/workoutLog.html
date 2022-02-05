@@ -1,0 +1,109 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Profile Page
+{% endblock %}
+
+{% block content %}
+    <div class="container form-box workout-log">
+        <form action="/workouts/{{ workout }}" method="post" name="workoutForm">
+            <h4 class="form-title">{{ workout.title() }}</h4>
+            <br>
+            <div>
+                <h6>Workout Entry</h6>
+                <hr>
+                <input type ="text" required class="form-control" list="datalistOptions" id="exerciseDataList" name="Exercise" placeholder="Search {{ workout.title() }} Exercises">
+                <datalist id="datalistOptions">
+                    {% for exercise in exercises %}
+                        <option value="{{ exercise.name.title() }}"></option>
+                    {% endfor %}
+                </datalist>
+            </div>
+            {% if workout == "strength training" %}
+            <div class="row">
+                <div class="col-6">
+                    <input autocomplete="OFF" required type="text" class="form-control" id="weight" name="Weight" placeholder="Weight (lbs)">
+                </div>
+                <div class="col-6 vert-center">
+                    <select required id="reps" class="form-select" name="Reps">
+                        <option value="" selected disabled>Reps</option>
+                        {% for rep in reps %}
+                        <option value="{{ rep }}">{{ rep }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            {% endif %}
+            {% if workout == "cardio" %}
+            <div class="row">
+                <div class="col-6">
+                    <input autocomplete="OFF" required type="text" class="form-control" id="duration" name="Duration" placeholder="Duration (min)">
+                </div>
+                <div class="col-6">
+                    <input autocomplete="OFF" type="text" class="form-control" id="distance" name="Distance" placeholder="Distance (mi)">
+                </div>
+            </div>
+            {% endif %}
+            <div class="col-6 horz-center">
+                <select id="difficulty" class="form-select" name="Difficulty">
+                    <option value="" selected disabled>Difficulty (1-10)</option>
+                    {% for num in scale %}
+                        <option value="{{ num }}">{{ num }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <br>
+            <div class="col-5 horz-center">
+                <button type="submit" class="btn btn-primary">Add to Workout</button>
+            </div>
+        </form>
+        <br>
+        <br>
+        <h6>Today's Workout Log</h6>
+        <hr>
+        <table class="table log-table">
+        {% if workout == "cardio" %}
+            <thead>
+                <th scope="col">Exercise</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Dist</th>
+                <th scope="col">AVG Speed</th>
+                <th scope="col">Cal</th>
+                <th scope="col">Diff</th>
+            </thead>
+            {% for log in workoutLogs %}
+                {% if log.type == "cardio" %}
+                <tr>
+                    <td>{{ log.exercise.title() }}</td>
+                    <td>{{ log.duration }} mins</td>
+                    <td>{{ log.distance }} mi.</td>
+                    <td>{{ log.avgSpeed }} MPH</td>
+                    <td>{{ log.calories }} Cals</td>
+                    <td>{{ log.difficulty }}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        {% elif workout == "strength training" %}
+            <thead>
+                <th scope="col">Exercise</th>
+                <th scope="col">Weight</th>
+                <th scope="col">Reps</th>
+                <th scope="col">Diff</th>
+            </thead>
+            {% for log in workoutLogs %}
+                {% if log.type == "strength training" %}
+                <tr>
+                    <td>{{ log.exercise.title() }}</td>
+                    <td>{{ log.weight }} lbs</td>
+                    <td>{{ log.reps }} reps</td>
+                    <td>{{ log.difficulty }}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        </table>
+        <form class="col-6 horz-center" action="/history" method="GET">
+            <button type="submit" class="btn btn-primary">View Workout History</button>
+        </form>
+    </div>
+{% endblock %}

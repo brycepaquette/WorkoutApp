@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="bg-dark accordion accordion-flush radius white-text" id="accordionFlushExample">
+    <div class="page-box form-box accordion accordion-flush" id="target-exercise">
         <h1>{{ target.capitalize() }}</h1>
     {% for exercise in exercises %}
         <div class="accordion-item">
@@ -14,32 +14,12 @@
                 {{ exercise.name.capitalize() }}
                 </button>
             </h2>
-            <div id="flush-collapse{{ exercise.id }}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{ exercise.id }}" data-bs-parent="#accordionFlushExample">
+            <div id="flush-collapse{{ exercise.id }}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{ exercise.id }}" data-bs-parent="#target-exercise">
                 <div class="accordion-body">
                     <img src="{{ exercise.gif_url }}">
-                    <div>
-                        I want <br>
-                        to say <br>
-                        something <br>
-                        here <br>
-
-                    </div>
                 </div>
             </div>
         </div>
     {% endfor %}
     </div>
-    <!-- <div class="exercise-box">
-        {% for exercise in exercises %}
-            <div class="card">
-                <a href="/exercises/{{ target }}">
-                    <img src="../static/{{ target }}.jpeg" class="card-img-top card-img" alt="...">
-                </a>
-                <a href="/profile">
-                    <div class="centered">{{ target.capitalize() }}</div>
-                </a> 
-                {{ exercise.name }}
-                <img class="card-img" src="{{ exercise.gif_url }}">
-            </div> 
-        {% endfor %} -->
 {% endblock %}

@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Workout History
+{% endblock %}
+
+{% block content %}
+    <div class="header">
+        <h2>Workout History</h2>
+    </div>
+    <div class="history container form-box page-box">
+        <form action="/history" method="POST">
+            <input type="date" id="date" name="date" value="{{ recorded }}">
+       <button class="btn btn-primary">Apply</button>
+        </form>
+        <br>
+        {% if workoutLogs == [] %}
+            <p class="empty-msg">No Workout Logged on {{ date_msg }}</p>
+        {% else %}
+        <h6>Cardio</h6>
+        <hr>
+        <table class="table log-table">
+            <thead>
+                <th scope="col">Exercise</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Dist</th>
+                <th scope="col">AVG Speed</th>
+                <th scope="col">Cal</th>
+                <th scope="col">Diff</th>
+            </thead>
+            {% for log in workoutLogs %}
+                {% if log.type == "cardio" %}
+                <tr>
+                    <td>{{ log.exercise.title() }}</td>
+                    <td>{{ log.duration }} mins</td>
+                    <td>{{ log.distance }} mi.</td>
+                    <td>{{ log.avgSpeed }} MPH</td>
+                    <td>{{ log.calories }} Cals</td>
+                    <td>{{ log.difficulty }}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+        <br>
+        <h6>Strength Training</h6>
+        <hr>
+        <table class="table log-table">
+            <thead>
+                <th scope="col">Exercise</th>
+                <th scope="col">Weight</th>
+                <th scope="col">Reps</th>
+                <th scope="col">Diff</th>
+            </thead>
+            {% for log in workoutLogs %}
+                {% if log.type == "strength training" %}
+                <tr>
+                    <td>{{ log.exercise.title() }}</td>
+                    <td>{{ log.weight }} lbs</td>
+                    <td>{{ log.reps }} reps</td>
+                    <td>{{ log.difficulty }}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+{% endblock %}
