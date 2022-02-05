@@ -1,7 +1,5 @@
 import calendar
 from datetime import date, datetime
-from flask_bootstrap import Bootstrap
-from flask_datepicker import datepicker
 import re
 from flask import Flask, render_template, request, redirect
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -29,10 +27,6 @@ login_manager.login_view = 'login'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///workoutapp.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # Added due to warning suggesting it be set to False
 db = SQLAlchemy(app)
-
-#Initialize datepicker
-Bootstrap(app)
-datepicker(app)
 
 # User Model
 class Users(UserMixin, db.Model):
@@ -110,12 +104,15 @@ def index():
         totalDist = 0
         BMI = round(((current_user.weight / (current_user.height ** 2)) * 703),1)
         workouts = WorkoutLog.query.filter_by(userId=current_user.id)
-
+        last_date = None
         for workout in workouts:
+            print(workout.recorded.date())
             if workout.recorded.date() >= today.replace(day=1):
-                count += 1
-            if workout.distance != None:
-                totalDist += workout.distance
+                if workout.recorded.date() != last_date:
+                    count += 1
+                    last_date = workout.recorded.date()
+                if workout.distance != None:
+                    totalDist += workout.distance
 
     return render_template("index.html", count=count, daysInMonth=daysInMonth, totalDist=totalDist, monthName=monthName, BMI=BMI)
 
@@ -131,13 +128,31 @@ def workout():
 @login_required
 def workoutLog(workout):
     recorded = date.today()
+    exercise_value = ""
+    weight_value = ""
+    diff_value = ""
+    reps_value = 0
+    exercises = []
+    workoutLogs = WorkoutLog.query.filter_by(recorded=f"{recorded.strftime('%Y-%m-%d')} 00:00:00.000000", userId=current_user.id).all()
+    scale = range(1,11)
+    reps = range(20, 0, -1)
+
+
+    # List of exercises dependant on the workout passed from url
+    for exercise in exerciseList:
+        if workout == "cardio" and exercise.target == "cardio":
+            exercises.append(exercise)
+        elif workout == "strength training" and exercise.target != "cardio":
+            exercises.append(exercise)
 
     if request.method == "POST":
         form = request.form
         age = recorded.year - current_user.bYear
         weight = current_user.weight
         gender = current_user.gender
-
+        exercise_value = form['Exercise']
+        diff_value = int(form['Difficulty'])
+        
         if workout == "cardio":
             duration = form['Duration']
             dist = form['Distance']
@@ -169,6 +184,8 @@ def workoutLog(workout):
                 difficulty = form['Difficulty']
             )
         elif workout == "strength training":
+            reps_value = int(form['Reps'])
+            weight_value = form['Weight']
             log = WorkoutLog(
                 userId = current_user.id,
                 recorded = recorded,
@@ -182,20 +199,18 @@ def workoutLog(workout):
         # Add user to the database
         db.session.add(log)
         db.session.commit()
-        return redirect(f'/workouts/{workout}')
-    else:
-        exercises = []
-        workoutLogs = WorkoutLog.query.filter_by(recorded=f"{recorded.strftime('%Y-%m-%d')} 00:00:00.000000", userId=current_user.id).all()
-        scale = range(1,11)
-        reps = range(20, 0, -1)
+    return render_template("workoutLog.html", workout=workout, 
+                                                exercises=exercises, 
+                                                workoutLogs=workoutLogs, 
+                                                scale=scale, 
+                                                reps=reps, 
+                                                today=recorded, 
+                                                exercise=exercise,
+                                                reps_value = reps_value,
+                                                exercise_value = exercise_value,
+                                                weight_value = weight_value,
+                                                diff_value = diff_value)
 
-        # List of exercises dependant on the workout passed from url
-        for exercise in exerciseList:
-            if workout == "cardio" and exercise.target == "cardio":
-                exercises.append(exercise)
-            elif workout == "strength training" and exercise.target != "cardio":
-                exercises.append(exercise)
-        return render_template("workoutLog.html", workout=workout, exercises=exercises, workoutLogs=workoutLogs, scale=scale, reps=reps, today=recorded)
 
 
 @app.route("/history", methods=["GET", "POST"])

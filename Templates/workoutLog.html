@@ -12,7 +12,17 @@
             <div>
                 <h6>Workout Entry</h6>
                 <hr>
-                <input type ="text" required class="form-control" list="datalistOptions" id="exerciseDataList" name="Exercise" placeholder="Search {{ workout.title() }} Exercises">
+                <input 
+                    type ="text" 
+                    required class="form-control" 
+                    list="datalistOptions" 
+                    id="exerciseDataList" 
+                    name="Exercise" 
+                    placeholder="Search {{ workout.title() }} Exercises"
+                    {% if exercise_value != "" %} 
+                        value="{{ exercise_value }}"
+                    {% endif %}
+                    >
                 <datalist id="datalistOptions">
                     {% for exercise in exercises %}
                         <option value="{{ exercise.name.title() }}"></option>
@@ -22,13 +32,26 @@
             {% if workout == "strength training" %}
             <div class="row">
                 <div class="col-6">
-                    <input autocomplete="OFF" required type="text" class="form-control" id="weight" name="Weight" placeholder="Weight (lbs)">
+                    <input autocomplete="OFF" 
+                            required type="text" 
+                            class="form-control" 
+                            id="weight" 
+                            name="Weight" 
+                            placeholder="Weight (lbs)"
+                            {% if weight_value != "" %} 
+                            value="{{ weight_value }}"
+                            {% endif %}
+                            >
                 </div>
                 <div class="col-6 vert-center">
-                    <select required id="reps" class="form-select" name="Reps">
+                    <select required id="reps" class="form-select" name="Reps" value="{{ reps_value }}">
                         <option value="" selected disabled>Reps</option>
                         {% for rep in reps %}
-                        <option value="{{ rep }}">{{ rep }}</option>
+                            {% if rep == reps_value %}
+                            <option selected value="{{ rep }}">{{ rep }}</option>
+                            {% else %}
+                            <option value="{{ rep }}">{{ rep }}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>
@@ -48,14 +71,21 @@
                 <select id="difficulty" class="form-select" name="Difficulty">
                     <option value="" selected disabled>Difficulty (1-10)</option>
                     {% for num in scale %}
+                        {% if num == diff_value %}
+                            <option selected value="{{ num }}">{{ num }}</option>
+                        {% else %}
                         <option value="{{ num }}">{{ num }}</option>
+                        {% endif %}
                     {% endfor %}
                 </select>
             </div>
             <br>
-            <div class="col-5 horz-center">
-                <button type="submit" class="btn btn-primary">Add to Workout</button>
+            <div>
+                <button type="submit" class="btn btn-primary full-width">Add to Workout</button>
             </div>
+            {% if exercise_value != "" %}
+                <p class="confirm-msg">Logged Exercise</p>
+            {% endif %}
         </form>
         <br>
         <br>
@@ -102,7 +132,7 @@
             {% endfor %}
         {% endif %}
         </table>
-        <form class="col-6 horz-center" action="/history" method="GET">
+        <form class="col-5 horz-center" action="/history" method="GET">
             <button type="submit" class="btn btn-primary">View Workout History</button>
         </form>
     </div>

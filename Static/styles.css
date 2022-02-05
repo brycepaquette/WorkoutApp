@@ -123,6 +123,13 @@ nav {
     border-radius: 20px;
 }
 
+.confirm-msg {
+    color: green;
+    font-weight: 600;
+    text-align: center;
+    font-size: .75rem;
+}
+
 .white-text {
     color: white;
 }
@@ -140,6 +147,10 @@ nav {
 
 .horz-center {
     margin: 0 auto;
+}
+
+.full-width {
+    width: 100%;
 }
 
 .text-center {
