@@ -30,12 +30,8 @@
                 <form class="inline"action="/logout" method="post">
                     <button class="btn btn-primary" type="submit">Logout</button>
                 </form>
-                <form class="inline"action="" method="post">
+                <form class="inline" action="/update" method="get">
                     <button class="btn btn-primary" type="submit">Update</button>
-                </form>
-                <form class="inline" action="/delete" method="post">
-                    <input hidden type="text" name="id" value="{{ user.id }}">
-                    <button class="btn btn-danger" type="submit">Delete Account</button>
                 </form>
         </div>
         

@@ -266,7 +266,7 @@ def signup():
         weight = form['Weight']
         if not re.search('[0-9]', weight):
             return "Invalid weight"
-        if int(weight) < 60 or int(weight) > 900:
+        if float(weight) < 60 or float(weight) > 900:
             return "Invalid Weight"
         
         # Check for valid email
@@ -286,7 +286,7 @@ def signup():
             return 'User already exists. Please sign in or use a different phone number.'
                 
         # Convert height to inches
-        height = int(form["Height-in"]) + (int(form['Height-ft']) * 12)
+        height = float(form["Height-in"]) + (float(form['Height-ft']) * 12)
 
         # Hash password
         hash = generate_password_hash(form['Password'])
@@ -297,7 +297,7 @@ def signup():
             password = hash,                   email = form['Email'],
             phoneNo = form['Phone Number'],    bYear = int(form['Birth Year']),
             bMonth = int(form['Birth Month']), bDay = int(form['Birth Day']),
-            gender = form['Gender'],           height = int(height),
+            gender = form['Gender'],           height = float(height),
             weight = float(form['Weight'])
         )
 
@@ -310,6 +310,84 @@ def signup():
     
     return render_template("signup.html")
 
+
+@app.route("/update", methods=["GET", "POST"])
+@login_required
+def update():
+    if request.method == "POST":
+        form = request.form
+        user = Users.query.get(current_user.id)
+
+        # Check for valid weight
+        weight = form['Weight']
+        if not re.search('[0-9]', weight):
+            return "Invalid weight"
+        if float(weight) < 60 or float(weight) > 900:
+            return "Invalid Weight"
+        
+        # Check for valid email
+        emailRegex = """(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])"""
+        if not re.search(emailRegex, form['Email']):
+            return "Invalid Email"
+        
+        # Check for valid phone number
+        phoneRegex = """^[0-9]{3}\.[0-9]{3}\.[0-9]{4}"""
+        if not re.search(phoneRegex, form["Phone Number"]):
+            return "Invalid Phone Number. Use Format: 555.555.5555"
+
+        # Check if user exists, redirect if exists
+        if not user.email == form['Email']:
+            if Users.query.filter_by(email=form['Email']).first():
+                return 'User already exists. Please use a different email.'
+        if not user.phoneNo == form['Phone Number']:
+            if Users.query.filter_by(phoneNo=form['Phone Number']).first():
+                return 'User already exists. Please use a different phone number.'
+                
+        # Convert height to inches
+        try:
+            height = int(form["Height-in"]) + (int(form['Height-ft']) * 12)
+        except KeyError:
+            height = user.height
+
+        # If new password, Hash password
+        if form['Password'] != '':
+            hash = generate_password_hash(form['Password'])
+            user.password = hash
+
+        user.fname = form['First Name']
+        user.lname = form['Last Name']
+        user.email = form['Email']
+        user.phoneNo = form['Phone Number']
+
+        try:
+            user.bYear = int(form['Birth Year'])
+        except KeyError:
+            pass
+
+        try:
+            user.bMonth = int(form['Birth Month'])
+        except KeyError:
+            pass
+
+        try:
+            user.bDay = int(form['Birth Day'])
+        except KeyError:
+            pass
+
+        try:
+            user.gender = form['Gender']
+        except KeyError:
+            pass
+
+        user.height = float(height)
+        user.weight = float(form['Weight'])
+
+        db.session.commit()
+
+        #redirect to the login page
+        return redirect("/profile")
+    
+    return render_template("update.html")
 
 
 @app.route("/login", methods=["GET", "POST"])

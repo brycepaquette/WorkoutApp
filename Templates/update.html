@@ -5,26 +5,26 @@
 
 {% block content%}
     <div class="container form-box page-box">
-        <form action="/signup" method="post">
+        <form action="/update" method="post">
             <h4 class="form-title">Sign Up</h4>
             <div>
-                <input required type="text" class="form-control" id="fname" name="First Name" placeholder="First Name">
+                <input required type="text" class="form-control" id="fname" name="First Name" placeholder="First Name" value="{{ current_user.fname }}">
             </div>
             <div>
-                <input required type="text" class="form-control" id="lname" name="Last Name" placeholder="Last Name">
+                <input required type="text" class="form-control" id="lname" name="Last Name" placeholder="Last Name" value="{{ current_user.lname }}">
             </div>
             <div>
-                <input required type="email" class="form-control" id="email" name="Email" placeholder="example@gmail.com">
+                <input required type="email" class="form-control" id="email" name="Email" placeholder="example@gmail.com" value="{{ current_user.email }}">
             </div>
             <div>
-                <input required type="password" class="form-control" id="password" name="Password" placeholder="Password">
+                <input type="password" class="form-control" id="password" name="Password" placeholder="New Password">
             </div>
             <div>
-                <input required type="text" class="form-control" id="phoneNo" name="Phone Number" placeholder="Ex. 555-555-1234">
+                <input required type="text" class="form-control" id="phoneNo" name="Phone Number" placeholder="Ex. 555-555-1234" value="{{ current_user.phoneNo }}">
             </div>
             <div class="col-md-6">
-                <select required id="gender" class="form-select" name="Gender">
-                    <option value="" selected disabled>Gender</option>
+                <select id="gender" class="form-select" name="Gender" value="{{ current_user.gender }}">
+                    <option selected disabled>Gender</option>
                     <option value="1">Male</option>
                     <option value="0">Female</option>
                     <option value="2">Other</option>
@@ -36,7 +36,7 @@
             </div>
             <div class="row">
                 <div class="col-md-4">
-                    <select required id="bMonth" class="form-select" name="Birth Month">
+                    <select id="bMonth" class="form-select" name="Birth Month" value="{{ current_user.bMonth }}">
                         <option value="" selected disabled>Month</option>
                         <option value="01">January</option>
                         <option value="02">February</option>
@@ -53,7 +53,7 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <select required id="bDay" class="form-select" name="Birth Day">
+                    <select id="bDay" class="form-select" name="Birth Day" value="{{ current_user.bDay }}">
                         <option value="" selected disabled>Day</option>
                         <option value="01">1</option>
                         <option value="02">2</option>
@@ -89,7 +89,7 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <select required id="bYear" class="form-select" name="Birth Year">
+                    <select id="bYear" class="form-select" name="Birth Year" value="{{ current_user.bYear }}">
                         <option value="" selected disabled>Year</option>
                         <option value="1940">1940</option>
                         <option value="1941">1941</option>
@@ -180,7 +180,7 @@
             <div class="row">
                 <p>Height:</p>
                 <div class="col-md-6">
-                    <select required id="height-ft" class="form-select" name="Height-ft">
+                    <select id="height-ft" class="form-select" name="Height-ft" value="{{ current_user.height // 12 }}">
                         <option value="" selected disabled>Feet</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -194,9 +194,8 @@
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <select required id="height-in" class="form-select" name="Height-in">
+                    <select id="height-in" class="form-select" name="Height-in" value="{{ current_user.height % 12 }}">
                         <option value="" selected disabled>Inches</option>
-                        <option value="0">0</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -213,10 +212,10 @@
             </div>
             <div>
                 <label for="weight" class="form-label">Weight</label>
-                <input required type="text" class="form-control" id="weight" name="Weight" placeholder="lbs.">
+                <input required type="text" class="form-control" id="weight" name="Weight" placeholder="lbs." value="{{ current_user.weight }}">
             </div>
             <div class="col-12">
-            <button type="submit" class="btn btn-primary">Sign Up</button>
+            <button type="submit" class="btn btn-primary">Update</button>
             </div>
         </form>
     </div>
