@@ -15,7 +15,7 @@
                     <img src="../static/images/{{ workout }}.jpeg" class="card-img-top card-img" alt="...">
                 </a>
                 <a href="/workouts/{{ workout }}">
-                    <div class="centered">{{ workout.capitalize() }}</div>
+                    <div class="centered">{{ workout.title() }}</div>
                 </a>
             </div>
         {% endfor %}

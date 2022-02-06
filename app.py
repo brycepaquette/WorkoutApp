@@ -106,7 +106,6 @@ def index():
         workouts = WorkoutLog.query.filter_by(userId=current_user.id)
         last_date = None
         for workout in workouts:
-            print(workout.recorded.date())
             if workout.recorded.date() >= today.replace(day=1):
                 if workout.recorded.date() != last_date:
                     count += 1
@@ -133,11 +132,7 @@ def workoutLog(workout):
     diff_value = ""
     reps_value = 0
     exercises = []
-    workoutLogs = WorkoutLog.query.filter_by(recorded=f"{recorded.strftime('%Y-%m-%d')} 00:00:00.000000", userId=current_user.id).all()
-    scale = range(1,11)
-    reps = range(20, 0, -1)
-
-
+    
     # List of exercises dependant on the workout passed from url
     for exercise in exerciseList:
         if workout == "cardio" and exercise.target == "cardio":
@@ -199,6 +194,11 @@ def workoutLog(workout):
         # Add user to the database
         db.session.add(log)
         db.session.commit()
+
+    workoutLogs = WorkoutLog.query.filter_by(recorded=f"{recorded.strftime('%Y-%m-%d')} 00:00:00.000000", userId=current_user.id).all()
+    scale = range(1,11)
+    reps = range(20, 0, -1)
+    
     return render_template("workoutLog.html", workout=workout, 
                                                 exercises=exercises, 
                                                 workoutLogs=workoutLogs, 

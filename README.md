@@ -1,3 +1,9 @@
+# Strength & Fitness Workout Tracking App
+#### Video Demo: https://youtu.be/cHuwDk4Itlo
+#### Description: A Workout Tracking App built using Python's Flask Framework, Sqlite3, and Bootstrap. This is the Final Project Submission for CS50x, Harvard's Introduction to Computer Science Course.
+
+#### Resources & Process:
+
 Step 1 - Creating a database of exercises to choose from in the app
 * Found a website Programmableweb.com which lead me to an API on RapidAPI.com
 * This looks promising and rapidAPI gives you access to hundreds of APIs
